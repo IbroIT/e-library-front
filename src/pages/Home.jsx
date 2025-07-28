@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getBooks } from '../api/books';
 import BookCard from '../components/BookCard';
+import Hero from '../components/Hero';
 
 export default function Home() {
   const [books, setBooks] = useState([]);
@@ -26,14 +27,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="bg-blue-800 text-white py-20">
-        <div className="container mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold mb-6">Электронная библиотека университета</h1>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Доступ к учебным материалам, научным работам и литературе
-          </p>
-        </div>
-      </section>
+      <Hero />
 
       {/* Books Section */}
       <section className="py-16 bg-gray-50 flex-grow">

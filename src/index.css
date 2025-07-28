@@ -25,3 +25,15 @@
   -webkit-box-orient: vertical;  
   overflow: hidden;
 }
+
+.nav-link {
+  @apply text-gray-700 hover:text-blue-600 transition duration-300;
+}
+
+.language-btn {
+  @apply px-3 py-1 rounded-md bg-gray-200 text-gray-700;
+}
+
+.language-btn.active {
+  @apply bg-blue-600 text-white;
+}
