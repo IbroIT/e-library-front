@@ -9,14 +9,39 @@ const BookCard = ({ book }) => {
   const lang = i18n.language;
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleDownload = async () => {
-    try {
-      const response = await getBookDetails(book.id);
-      window.open(response.data.file, '_blank');
-    } catch (error) {
-      console.error('Download error:', error);
+  // Обработчик для кнопки "Скачать"
+  const handleDownload = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Проверяем, есть ли файл
+    if (!book.file) {
+      console.error('No file available for download');
+      return;
     }
+
+    // Создаем полный URL для скачивания
+    const fileUrl = book.file.startsWith('http') 
+      ? book.file 
+      : `${window.location.origin}${book.file}`;
+
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = `${book.title || 'book'}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
+
+  // Получаем URL для PDF
+  const getPdfUrl = () => {
+    if (!book.file) return null;
+    return book.file.startsWith('http') 
+      ? book.file 
+      : `${window.location.origin}${book.file}`;
+  };
+
+  const pdfUrl = getPdfUrl();
 
   return (
     <motion.div 
@@ -62,16 +87,53 @@ const BookCard = ({ book }) => {
           {lang === 'ru' ? book.author_ru : book.author_kg}
         </p>
         
-        <div className="flex flex-wrap gap-2 mb-4">
-          {book.categories?.map(category => (
-            <motion.span 
-              key={category.id} 
-              className="px-3 py-1 bg-blue-900/50 text-blue-300 text-xs rounded-full"
-              whileHover={{ scale: 1.05, backgroundColor: "rgba(59, 130, 246, 0.7)" }}
+        {book.description && (
+          <div className="mb-4">
+            <p className="font-semibold text-gray-700 mb-1">Описание:</p>
+            <p className="text-gray-600 text-sm line-clamp-3">{book.description}</p>
+          </div>
+        )}
+
+        {/* PDF Viewer (по клику на "Читать") */}
+        {showPdf && pdfUrl && (
+          <div className="mb-4 border border-gray-200 rounded-lg p-2 max-h-96 overflow-y-auto">
+            <Document
+              file={pdfUrl}
+              onLoadSuccess={onDocumentLoadSuccess}
+              className="pdf-viewer"
+              loading={<div className="text-center py-4">Загрузка PDF...</div>}
+              error={<div className="text-center py-4 text-red-500">Ошибка загрузки PDF</div>}
             >
-              {lang === 'ru' ? category.name_ru : category.name_kg}
-            </motion.span>
-          ))}
+              {Array.from(new Array(numPages), (_, index) => (
+                <Page 
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                  width={300}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  className="mb-2 border border-gray-100"
+                  loading={<div className="text-center py-2">Загрузка страницы {index + 1}...</div>}
+                />
+              ))}
+            </Document>
+          </div>
+        )}
+
+        <div className="flex space-x-3">
+          <button 
+            onClick={() => setShowPdf(!showPdf)}
+            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition flex-1"
+            disabled={!book.file}
+          >
+            {showPdf ? 'Скрыть' : 'Читать'}
+          </button>
+          <button 
+            onClick={handleDownload}
+            className="border border-blue-700 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 transition flex-1"
+            disabled={!book.file}
+          >
+            Скачать
+          </button>
         </div>
         
         <motion.button 
