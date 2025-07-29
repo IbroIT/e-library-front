@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { getBooks } from '../api/books';
 import BookCard from '../components/BookCard';
 import Hero from '../components/Hero';
+import LibraryPage from '../components/LibraryPage';
 
 export default function Home() {
   const [books, setBooks] = useState([]);
@@ -30,23 +31,7 @@ export default function Home() {
       <Hero />
 
       {/* Books Section */}
-      <section className="py-16 bg-gray-50 flex-grow">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">Каталог книг</h2>
-          
-          {books.length === 0 ? (
-            <div className="text-center text-gray-500">
-              Нет доступных книг
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {books.map(book => (
-                <BookCard key={book.id} book={book} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      <LibraryPage />
     </div>
   );
 }

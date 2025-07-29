@@ -1,84 +1,91 @@
-import { useState } from 'react';
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FaDownload } from "react-icons/fa";
+import { getBookDetails } from "../api/books";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+const BookCard = ({ book }) => {
+  const { i18n } = useTranslation();
+  const lang = i18n.language;
+  const [isHovered, setIsHovered] = useState(false);
 
-export default function BookCard({ book }) {
-  const [showPdf, setShowPdf] = useState(false);
-  const [numPages, setNumPages] = useState(null);
-
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
+  const handleDownload = async () => {
+    try {
+      const response = await getBookDetails(book.id);
+      window.open(response.data.file, '_blank');
+    } catch (error) {
+      console.error('Download error:', error);
+    }
+  };
 
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-200">
-      {/* Обложка книги */}
-      <div className="h-48 bg-blue-50 flex items-center justify-center">
+    <motion.div 
+      className="relative bg-gray-900 rounded-xl overflow-hidden border border-gray-700"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    >
+      <div className="h-48 bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center relative overflow-hidden">
         {book.cover ? (
-          <img 
+          <motion.img 
             src={book.cover} 
-            alt={`Обложка ${book.title}`} 
+            alt={lang === 'ru' ? book.title_ru : book.title_kg}
             className="h-full w-full object-cover"
+            animate={isHovered ? { scale: 1.05 } : { scale: 1 }}
+            transition={{ duration: 0.3 }}
           />
         ) : (
-          <div className="bg-blue-800 text-white p-4 rounded-full">
-            <span className="text-2xl font-bold">{book.title.charAt(0)}</span>
-          </div>
+          <motion.span 
+            className="text-blue-400 text-6xl"
+            animate={isHovered ? { rotate: 5, scale: 1.1 } : { rotate: 0, scale: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            📚
+          </motion.span>
         )}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0"
+          animate={isHovered ? { opacity: 1 } : { opacity: 0 }}
+        />
       </div>
       
-      {/* Контент карточки */}
-      <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{book.title}</h3>
-        <p className="text-gray-600 mb-2"><span className="font-semibold">Автор:</span> {book.author}</p>
-        <p className="text-gray-600 mb-4"><span className="font-semibold">Год:</span> {book.year || 'Не указан'}</p>
+      <div className="p-5">
+        <motion.h3 
+          className="text-xl font-bold text-white mb-2"
+          whileHover={{ color: "#60a5fa" }}
+        >
+          {lang === 'ru' ? book.title_ru : book.title_kg}
+        </motion.h3>
+        <p className="text-gray-400 mb-3">
+          {lang === 'ru' ? book.author_ru : book.author_kg}
+        </p>
         
-        {book.description && (
-          <div className="mb-4">
-            <p className="font-semibold text-gray-700 mb-1">Описание:</p>
-            <p className="text-gray-600 text-sm line-clamp-3">{book.description}</p>
-          </div>
-        )}
-
-        {/* PDF Viewer (по клику на "Читать") */}
-        {showPdf && (
-          <div className="mb-4 border border-gray-200 rounded-lg p-2">
-            <Document
-              file={`http://localhost:8000${book.file}`}
-              onLoadSuccess={onDocumentLoadSuccess}
-              className="pdf-viewer"
+        <div className="flex flex-wrap gap-2 mb-4">
+          {book.categories?.map(category => (
+            <motion.span 
+              key={category.id} 
+              className="px-3 py-1 bg-blue-900/50 text-blue-300 text-xs rounded-full"
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(59, 130, 246, 0.7)" }}
             >
-              {Array.from(new Array(numPages), (_, index) => (
-                <Page 
-                  key={`page_${index + 1}`}
-                  pageNumber={index + 1}
-                  width={300}
-                  renderTextLayer={false}
-                  className="mb-2 border border-gray-100"
-                />
-              ))}
-            </Document>
-          </div>
-        )}
-
-        <div className="flex space-x-3">
-          <button 
-            onClick={() => setShowPdf(!showPdf)}
-            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
-          >
-            {showPdf ? 'Скрыть' : 'Читать'}
-          </button>
-          <a 
-            href={`http://localhost:8000${book.file}`} 
-            download
-            className="border border-blue-700 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 transition"
-          >
-            Скачать
-          </a>
+              {lang === 'ru' ? category.name_ru : category.name_kg}
+            </motion.span>
+          ))}
         </div>
+        
+        <motion.button 
+          onClick={handleDownload}
+          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg flex items-center justify-center gap-2"
+          whileHover={{ scale: 1.02, boxShadow: "0 0 15px rgba(59, 130, 246, 0.5)" }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <FaDownload />
+          Download
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
+
+export default BookCard;

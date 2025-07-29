@@ -2,11 +2,32 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import logo from '../assets/logo2.png';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function HeroNavbar() {
   const { t, i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
+
+  // Прокрутка вверх при изменении маршрута
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -19,7 +40,9 @@ export default function HeroNavbar() {
   return (
     <>
       <motion.nav 
-        className="bg-gradient-to-r from-blue-500 to-blue-700 text-white py-6 px-8 flex items-center justify-between md:justify-around shadow-xl"
+        className={`fixed w-full z-50 bg-gradient-to-r from-blue-500 to-blue-700 text-white py-4 px-8 flex items-center justify-between md:justify-around shadow-xl transition-all duration-300 ${
+          isScrolled ? 'py-3' : 'py-6'
+        }`}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -27,7 +50,9 @@ export default function HeroNavbar() {
         {/* Логотип и название */}
         <div className="flex items-center space-x-4">
           <Link to="/" className="flex items-center">
-            <img src={logo} alt="Logo" className="h-12 mr-3" />
+            <img src={logo} alt="Logo" className={`h-12 mr-3 transition-all duration-300 ${
+              isScrolled ? 'h-10' : 'h-12'
+            }`} />
           </Link>
         </div>
 
@@ -37,6 +62,7 @@ export default function HeroNavbar() {
             <Link 
               to="/" 
               className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
+              onClick={() => window.scrollTo(0, 0)}
             >
               {t('navbar.home')}
             </Link>
@@ -45,6 +71,7 @@ export default function HeroNavbar() {
             <Link 
               to="/contacts" 
               className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
+              onClick={() => window.scrollTo(0, 0)}
             >
               {t('navbar.contacts')}
             </Link>
@@ -115,7 +142,7 @@ export default function HeroNavbar() {
 
       {/* Мобильное меню (появляется при клике) */}
       <motion.div 
-        className="md:hidden bg-blue-600 shadow-lg"
+        className="md:hidden bg-blue-600 shadow-lg fixed w-full z-40 mt-16"
         initial={{ opacity: 0, height: 0 }}
         animate={{ 
           opacity: isMenuOpen ? 1 : 0,
@@ -128,14 +155,20 @@ export default function HeroNavbar() {
           <Link 
             to="/" 
             className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => {
+              setIsMenuOpen(false);
+              window.scrollTo(0, 0);
+            }}
           >
             {t('navbar.home')}
           </Link>
           <Link 
             to="/contacts" 
             className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={() => {
+              setIsMenuOpen(false);
+              window.scrollTo(0, 0);
+            }}
           >
             {t('navbar.contacts')}
           </Link>
@@ -171,6 +204,9 @@ export default function HeroNavbar() {
           </div>
         </div>
       </motion.div>
+
+      {/* Добавляем отступ для контента, чтобы он не скрывался под фиксированным навбаром */}
+      <div className={`pt-24 ${isScrolled ? 'pt-20' : 'pt-24'}`}></div>
     </>
   );
 }
