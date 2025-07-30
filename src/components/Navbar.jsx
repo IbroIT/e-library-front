@@ -10,6 +10,7 @@ export default function HeroNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
+  const isRTL = i18n.dir() === 'rtl';
 
   // Прокрутка вверх при изменении маршрута
   useEffect(() => {
@@ -37,6 +38,11 @@ export default function HeroNavbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <>
       <motion.nav 
@@ -56,26 +62,36 @@ export default function HeroNavbar() {
           </Link>
         </div>
 
-        {/* Навигационные ссылки (десктоп) */}
-        <div className="hidden md:flex space-x-10">
-          <motion.div whileHover={{ scale: 1.1 }}>
-            <Link 
-              to="/" 
-              className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
-              onClick={() => window.scrollTo(0, 0)}
-            >
+        <div className="hidden md:flex space-x-3">
+          <Link 
+            to="/" 
+            className="relative text-white text-lg font-medium py-2 px-3 rounded-lg  transition-all group"
+            onClick={() => window.scrollTo(0, 0)}
+          >
+            <span className="relative z-10 flex items-center">
               {t('navbar.home')}
-            </Link>
-          </motion.div>
-          <motion.div whileHover={{ scale: 1.1 }}>
-            <Link 
-              to="/contacts" 
-              className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
-              onClick={() => window.scrollTo(0, 0)}
-            >
+              <svg className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} 
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
+            <span className={`absolute bottom-1 ${isRTL ? 'right-3' : 'left-3'} w-0 h-0.5 bg-gradient-to-r from-white to-blue-600 transition-all duration-500 group-hover:w-[calc(100%-1.5rem)]`}></span>
+          </Link>
+          
+          <Link 
+            to="/contacts" 
+            className="relative text-white text-lg font-medium py-2 px-3 rounded-lg  transition-all group"
+            onClick={() => window.scrollTo(0, 0)}
+          >
+            <span className="relative z-10 flex items-center">
               {t('navbar.contacts')}
-            </Link>
-          </motion.div>
+              <svg className={`w-4 h-4 ${isRTL ? 'mr-2' : 'ml-2'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} 
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
+            <span className={`absolute bottom-1 ${isRTL ? 'right-3' : 'left-3'} w-0 h-0.5 bg-gradient-to-r from-white to-blue-600 transition-all duration-500 group-hover:w-[calc(100%-1.5rem)]`}></span>
+          </Link>
         </div>
 
         {/* Блок с языками и бургер-меню */}
@@ -151,27 +167,37 @@ export default function HeroNavbar() {
         transition={{ duration: 0.3 }}
         style={{ overflow: 'hidden' }}
       >
-        <div className="flex flex-col px-8 py-4 space-y-4">
+        <div className="flex flex-col px-8 py-4 space-y-6">
           <Link 
             to="/" 
-            className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
-            onClick={() => {
-              setIsMenuOpen(false);
-              window.scrollTo(0, 0);
-            }}
+            className="relative text-white text-xl font-medium py-3 px-4 rounded-lg hover:bg-blue-900/30 transition-all group"
+            onClick={closeMenu}
           >
-            {t('navbar.home')}
+            <span className="relative z-10 flex items-center">
+              {t('navbar.home')}
+              <svg className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} 
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
+            <span className={`absolute bottom-2 ${isRTL ? 'right-4' : 'left-4'} w-0 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-500 group-hover:w-[calc(100%-2rem)]`}></span>
           </Link>
+          
           <Link 
             to="/contacts" 
-            className="text-white hover:text-blue-200 transition duration-300 font-medium text-lg"
-            onClick={() => {
-              setIsMenuOpen(false);
-              window.scrollTo(0, 0);
-            }}
+            className="relative text-white text-xl font-medium py-3 px-4 rounded-lg hover:bg-blue-900/30 transition-all group"
+            onClick={closeMenu}
           >
-            {t('navbar.contacts')}
+            <span className="relative z-10 flex items-center">
+              {t('navbar.contacts')}
+              <svg className={`w-5 h-5 ${isRTL ? 'mr-2' : 'ml-2'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} 
+                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
+            <span className={`absolute bottom-2 ${isRTL ? 'right-4' : 'left-4'} w-0 h-0.5 bg-gradient-to-r from-blue-400 to-blue-600 transition-all duration-500 group-hover:w-[calc(100%-2rem)]`}></span>
           </Link>
+          
           <div className="flex space-x-4 pt-2">
             <button
               onClick={() => {
