@@ -13,6 +13,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/contacts" element={<Contacts />} />
+            
           </Routes>
         </main>
         <Footer />
