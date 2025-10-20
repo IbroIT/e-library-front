@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getBooks } from '../api/books';
-import BookCard from '../components/BookCard';
 import Hero from '../components/Hero';
-import LibraryPage from '../components/LibraryPage';
+import LibraryComponent from '../components/LibraryComponent';
+
 
 export default function Home() {
   const [books, setBooks] = useState([]);
@@ -30,8 +30,7 @@ export default function Home() {
       {/* Hero Section */}
       <Hero />
 
-      {/* Books Section */}
-      <LibraryPage />
+      <LibraryComponent />
     </div>
   );
 }

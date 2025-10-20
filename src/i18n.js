@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 // Импортируем переводы напрямую
 import ruTranslations from './locales/ru/common.json';
 import kgTranslations from './locales/kg/common.json';
+import enTranslations from './locales/en/common.json';
 
 i18n
   .use(initReactI18next)
@@ -24,6 +25,14 @@ i18n
           allCategories: 'Бардык категориялар',
           loading: 'Жүктөлүүдө...'
         }
+      },
+      en: {
+        translation: {
+          libraryTitle: 'Digital Library',
+          searchPlaceholder: 'Search by books...',
+          allCategories: 'All Categories',
+          loading: 'Loading...'
+        }
       }
     },
     lng: 'ru',
@@ -43,6 +52,9 @@ i18n
       },
       kg: {
         translation: kgTranslations
+      },
+      en: {
+        translation: enTranslations
       }
     },
     lng: 'ru', // язык по умолчанию
@@ -51,5 +63,4 @@ i18n
       escapeValue: false
     }
   });
-
 export default i18n;

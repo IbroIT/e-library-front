@@ -125,6 +125,20 @@ export default function HeroNavbar() {
                 className="w-8 h-6 object-cover rounded"
               />
             </motion.button>
+
+            <motion.button
+              onClick={() => changeLanguage('en')}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className={`p-1 rounded-full ${i18n.language === 'en' ? 'ring-2 ring-white' : ''}`}
+              title="English"
+            >
+              <img 
+                src="https://flagcdn.com/w40/gb.png" 
+                alt="English" 
+                className="w-8 h-6 object-cover rounded"
+              />
+            </motion.button>
           </div>
 
           {/* Бургер-меню (мобильная версия) */}

@@ -1,0 +1,109 @@
+{
+  "navbar": {
+    "title": "SU e-library",
+    "home": "Home",
+    "contacts": "Contacts"
+  },
+  "hero": {
+    "title": "Digital Library",
+    "subtitle": "The largest collection of e-books and scientific publications",
+    "startReading": "Start Reading",
+    "catalog": "Book Catalog",
+    "books": "Books",
+    "search": "Search",
+    "reading": "Reading",
+    "stats": {
+      "books": "Books in collection",
+      "readers": "Active readers",
+      "year": "Foundation year"
+    }
+  },
+  "footer": {
+    "libraryTitle": "Digital Library",
+    "description": "The largest collection of e-books and scientific publications for all ages and interests.",
+    "nav": {
+      "section1": {
+        "title": "Quick Links",
+        "items": ["Home", "Books", "Categories", "About Us"]
+      },
+      "section2": {
+        "title": "Resources",
+        "items": ["Blog", "Textbooks", "Help Center", "FAQ"]
+      },
+      "section3": {
+        "title": "Support",
+        "items": ["Contact Us", "Feedback", "Report Issue", "Online Chat"]
+      }
+    },
+    "stats": [
+      { "label": "Books in collection", "suffix": "1000+" },
+      { "label": "Active readers", "suffix": "500+" },
+      { "label": "Foundation year", "suffix": "2025" }
+    ],
+    "legal": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "contacts": "Contacts",
+      "copyright": "© {{year}} Digital Library. Salymbekov University. All rights reserved."
+    }
+  },
+  "library": {
+    "title": "Electronic Library",
+    "subtitle": "Discover the world of knowledge",
+    "searchPlaceholder": "Search by title, author or description...",
+    "filters": "Filters",
+    "chosenCategory": "Chosen category:",
+    "actionReset": "Reset",
+    "actions": {
+      "read": "Read"
+    },
+    "stats": {
+      "totalBooks": "Total books",
+      "foundBooks": "Books found",
+      "categoriesCount": "Categories"
+    },
+    "categories": {
+      "all": "All",
+      "classic": "Classic",
+      "dystopia": "Dystopia",
+      "fantasy": "Fantasy",
+      "scienceFiction": "Science Fiction"
+    },
+    "noResults": {
+      "title": "No books found",
+      "description": "Try changing your search query or select another category"
+    },
+    "books": {
+      "masterAndMargarita": {
+        "title": "Master and Margarita",
+        "description": "Mikhail Bulgakov's great novel about love, art and the struggle with the system",
+        "author": "Mikhail Bulgakov"
+      },
+      "crimeAndPunishment": {
+        "title": "Crime and Punishment",
+        "description": "Psychological novel about moral dilemmas and redemption",
+        "author": "Fyodor Dostoevsky"
+      },
+      "nineteenEightyFour": {
+        "title": "1984",
+        "description": "Dystopia about totalitarian society and loss of individuality",
+        "author": "George Orwell"
+      },
+      "harryPotter1": {
+        "title": "Harry Potter and the Philosopher's Stone",
+        "description": "First book about the adventures of young wizard Harry Potter",
+        "author": "J.K. Rowling"
+      },
+      "warAndPeace": {
+        "title": "War and Peace",
+        "description": "Epic about the life of Russian society during the Napoleonic wars",
+        "author": "Leo Tolstoy"
+      },
+      "hitchhikersGuide": {
+        "title": "The Hitchhiker's Guide to the Galaxy",
+        "description": "Humorous science fiction about the adventures of an earthling in space",
+        "author": "Douglas Adams"
+      }
+    }
+  }
+}
