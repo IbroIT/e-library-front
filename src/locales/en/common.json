@@ -53,6 +53,8 @@
     "searchPlaceholder": "Search by title, author or description...",
     "filters": "Filters",
     "chosenCategory": "Chosen category:",
+    "availableCategories": "Available categories:",
+    "category": "Categories",
     "actionReset": "Reset",
     "actions": {
       "read": "Read",

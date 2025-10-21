@@ -59,6 +59,8 @@
     "searchPlaceholder": "Аталышы, автору же сүрөттөмөсү боюнча издөө...",
     "filters": "Фильтрлер",
     "chosenCategory": "Тандалган категория:",
+    "availableCategories": "Жеткиликтүү категориялар:",
+    "category": "Категориялар",
     "actionReset": "Кайтаруу",
     "actions": {
       "read": "Окуу",

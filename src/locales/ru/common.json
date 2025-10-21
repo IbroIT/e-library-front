@@ -54,6 +54,8 @@
     "searchPlaceholder": "Поиск по названию, автору или описанию...",
     "filters": "Фильтры",
     "chosenCategory": "Выбрана категория:",
+    "availableCategories": "Доступно категорий:",
+    "category": "Категории",
     "actionReset": "Сбросить",
     "actions": {
       "read": "Читать",
