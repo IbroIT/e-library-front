@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Contacts from './pages/Contacts';
 import Footer from './components/Footer';
+import './App.css'
 
 export default function App() {
   return (
