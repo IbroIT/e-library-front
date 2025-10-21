@@ -31,7 +31,7 @@ export default function Home() {
       <Hero />
 
       {/* Books Section */}
-      <LibraryPage />
+      {/* <LibraryPage /> */}
     </div>
   );
 }
