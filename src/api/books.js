@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/books';
+const API_URL = 'https://su-library-back-d2d8d21af2e4.herokuapp.com/api/books';
 
 export const getBooks = (categoryIds = []) => {
   const params = {};
