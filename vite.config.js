@@ -11,4 +11,9 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react-pdf', 'pdfjs-dist'],
   },
+  build: {
+    emptyOutDir: true,
+    copyPublicDir: true,
+  },
+  publicDir: 'public',
 })
