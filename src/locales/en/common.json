@@ -109,9 +109,22 @@
       }
     },
     "loading": "Loading library...",
+    "noCover": "No cover",
     "errors": {
       "title": "Error",
       "fetchFailed": "Failed to load library data"
     }
+  },
+  "reader": {
+    "loading": "Loading book...",
+    "actions": {
+      "goBack": "Go Back"
+    },
+    "errors": {
+      "title": "Error",
+      "fetchFailed": "Failed to load book",
+      "notFound": "Book not found"
+    },
+    "copyright": "⚠️ Content is protected by copyright. Download is prohibited."
   }
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://e-library-back.onrender.com/api/books';
+const API_URL = 'http://127.0.0.1:8000/api/books';
 
 export const getBooks = (categoryIds = []) => {
   const params = {};

@@ -1,11 +1,10 @@
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaSearch, FaBook, FaFilter, FaBookOpen, FaChevronDown, FaSpinner, FaTimes } from "react-icons/fa";
 
 const LibraryComponent = () => {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -68,7 +67,14 @@ const LibraryComponent = () => {
 
   // Фильтрация книг
   const filteredBooks = useMemo(() => {
+    console.log('🔍 Starting filtration...');
+    console.log('📖 Total books:', books.length);
+    console.log('🎯 Selected category:', selectedCategory, typeof selectedCategory);
+    console.log('🔎 Search query:', searchQuery);
+
     const result = books.filter(book => {
+      console.log('📖 Checking book:', book.title, 'Category:', book.category, typeof book.category);
+      
       const bookTitle = book.title || '';
       const bookAuthor = book.author || '';
       const bookDescription = book.description || '';
@@ -81,23 +87,68 @@ const LibraryComponent = () => {
       
       if (selectedCategory === "all") {
         matchesCategory = true;
+        console.log('✅ Matches "all" category');
       } else {
         // Получаем ID категории книги - это поле category в API
         const bookCategoryId = book.category;
         
         // Сравниваем как строки для единообразия
         matchesCategory = bookCategoryId?.toString() === selectedCategory;
+        
+        console.log('🔍 Category match check:', {
+          bookTitle: book.title,
+          bookCategoryId,
+          selectedCategory,
+          bookCategoryString: bookCategoryId?.toString(),
+          matches: matchesCategory
+        });
       }
       
-      return matchesSearch && matchesCategory;
+      const passes = matchesSearch && matchesCategory;
+      console.log('✅ Book passes filter:', book.title, passes);
+      
+      return passes;
     });
 
+    console.log('✅ Filtered books result:', result.length, 'books');
+    console.log('📋 Filtered books titles:', result.map(b => b.title));
     return result;
   }, [books, searchQuery, selectedCategory]);
 
-  const handleRead = (bookId) => {
-    // Переходим на страницу чтения книги
-    navigate(`/read/${bookId}`);
+  // Анимация появления карточек
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
+  const handleRead = (pdfUrl) => {
+    console.log('PDF URL:', pdfUrl);
+    
+    if (pdfUrl && pdfUrl.startsWith('http')) {
+      window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+    } else if (pdfUrl) {
+      const fullUrl = `${API_BASE_URL.replace('/api', '')}${pdfUrl}`;
+      window.open(fullUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      console.error('PDF URL not available');
+      alert('PDF файл недоступен');
+    }
   };
 
   // Закрытие фильтров при клике вне области
@@ -120,12 +171,20 @@ const LibraryComponent = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <div className="text-4xl text-blue-400 mb-4 animate-spin">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            className="text-4xl text-blue-400 mb-4"
+          >
             <FaSpinner />
-          </div>
+          </motion.div>
           <p className="text-xl text-blue-300">{t('library.loading')}</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -133,7 +192,11 @@ const LibraryComponent = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center animate-fade-in">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
           <div className="text-6xl mb-4">❌</div>
           <h3 className="text-2xl font-bold text-red-400 mb-4">
             {t('library.errors.title')}
@@ -147,7 +210,7 @@ const LibraryComponent = () => {
           >
             {t('library.actions.retry')}
           </button>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -156,7 +219,44 @@ const LibraryComponent = () => {
     <div className="min-h-screen bg-black text-white py-8 px-4">
       {/* Анимированный фон */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-blue-900" />
+        <motion.div
+          className="absolute inset-0"
+          animate={{
+            background: [
+              "radial-gradient(circle at 20% 50%, #1a1a2e 0%, #000 70%)",
+              "radial-gradient(circle at 80% 20%, #16213e 0%, #000 70%)",
+              "radial-gradient(circle at 40% 80%, #1f1f3d 0%, #000 70%)"
+            ]
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            repeatType: "reverse"
+          }}
+        />
+        
+        {/* Анимированный код на фоне */}
+        {[...Array(20)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="text-green-400/20 text-xs font-mono absolute"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`
+            }}
+            animate={{
+              y: [0, typeof window !== 'undefined' ? window.innerHeight + 100 : 1000],
+              opacity: [0, 0.5, 0]
+            }}
+            transition={{
+              duration: 15 + Math.random() * 10,
+              repeat: Infinity,
+              delay: Math.random() * 5
+            }}
+          >
+            {Math.random() > 0.5 ? "010101" : "101010"}
+          </motion.div>
+        ))}
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -223,53 +323,56 @@ const LibraryComponent = () => {
                     </div>
                   </div>
 
-                  {/* Список категорий с улучшенным скроллом */}
-                  <div className="max-h-80 overflow-y-auto custom-scrollbar">
-                    {/* Опция "Все" */}
-                    <button
-                      onClick={() => {
-                        setSelectedCategory("all");
-                        setIsFilterOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-4 border-b border-gray-700/30 transition-all group ${
-                        selectedCategory === "all"
-                          ? "bg-blue-600/20 text-white border-l-4 border-l-blue-400"
-                          : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-2 h-2 rounded-full ${
-                          selectedCategory === "all" ? "bg-blue-400" : "bg-gray-500 group-hover:bg-blue-400"
-                        }`} />
-                        <span className="font-medium">{t("library.categories.all")}</span>
-                      </div>
-                    </button>
-                    
-                    {/* Категории с бэкенда */}
-                    {categories.map((category) => (
+                    {/* Список категорий с улучшенным скроллом */}
+                    <div className="max-h-80 overflow-y-auto custom-scrollbar">
+                      {/* Опция "Все" */}
                       <button
-                        key={category.id}
                         onClick={() => {
-                          setSelectedCategory(category.id.toString());
+                          console.log('🎯 "All" category clicked');
+                          setSelectedCategory("all");
                           setIsFilterOpen(false);
                         }}
                         className={`w-full text-left px-4 py-4 border-b border-gray-700/30 transition-all group ${
-                          selectedCategory === category.id.toString()
+                          selectedCategory === "all"
                             ? "bg-blue-600/20 text-white border-l-4 border-l-blue-400"
                             : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
                         }`}
                       >
                         <div className="flex items-center gap-3">
                           <div className={`w-2 h-2 rounded-full ${
-                            selectedCategory === category.id.toString() ? "bg-blue-400" : "bg-gray-500 group-hover:bg-blue-400"
+                            selectedCategory === "all" ? "bg-blue-400" : "bg-gray-500 group-hover:bg-blue-400"
                           }`} />
-                          <span className="font-medium">{category.name}</span>
+                          <span className="font-medium">{t("library.categories.all")}</span>
                         </div>
                       </button>
-                    ))}
+                      
+                      {/* Категории с бэкенда */}
+                      {categories.map((category) => (
+                        <button
+                          key={category.id}
+                          onClick={() => {
+                            console.log('🎯 Category clicked:', category.id, category.name, typeof category.id);
+                            setSelectedCategory(category.id.toString());
+                            setIsFilterOpen(false);
+                          }}
+                          className={`w-full text-left px-4 py-4 border-b border-gray-700/30 transition-all group ${
+                            selectedCategory === category.id.toString()
+                              ? "bg-blue-600/20 text-white border-l-4 border-l-blue-400"
+                              : "text-gray-300 hover:bg-gray-700/50 hover:text-white"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className={`w-2 h-2 rounded-full ${
+                              selectedCategory === category.id.toString() ? "bg-blue-400" : "bg-gray-500 group-hover:bg-blue-400"
+                            }`} />
+                            <span className="font-medium">{category.name}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -408,7 +511,7 @@ const LibraryComponent = () => {
 
                 {/* Кнопка чтения */}
                 <button
-                  onClick={() => handleRead(book.id)}
+                  onClick={() => handleRead(book.pdf_url || book.pdf_file)}
                   className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 font-semibold group transform hover:scale-105"
                 >
                   <FaBookOpen className="group-hover:scale-110 transition-transform" />
